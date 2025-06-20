@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ashley's simple json maker</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        body {
+            font-family: Poppins;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffdef6;
+            color: #333;
+        }
+        h1 {
+            color: #6d496a;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        p {
+            color: #6d496a;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .container {
+            background-color: rgb(235, 187, 206);
+            padding: 25px;
+            border-radius: 30px;
+            box-shadow: 0 0 30px 10px rgba(0, 0, 0, 0.328);
+        }
+        .slot {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            background-color: #fff2fc;
+            position: relative;
+        }
+        .slot h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-family: Poppins;
+            transition-duration: 0.3s;
+        }
+        input:focus {
+            font-weight: bold;
+            font-size: 30px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 20px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+            width: 200px;
+            font-family: Poppins;
+            transition-duration: 0.2s;
+        }
+        button:hover {
+            background-color: #2980b9;
+            font-size: 20px;
+            width: 210px;
+            border-radius: 5px;
+            font-weight: 300;
+        }
+        button:active {
+            background-color: #97d5ff;
+            font-size: 15px;
+            color: black;
+            font-weight: bolder;
+            border-radius: 30px;
+            width: 220px;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .children-container {
+            margin-left: 20px;
+            padding-left: 15px;
+            border-left: 2px solid #3498db;
+            margin-top: 10px;
+        }
+        .add-child {
+            background-color: #5c3352;
+            color: white;
+            padding: 5px 10px;
+            font-size: 14px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            
+        }
+        .add-child:hover {
+            background-color: #902196;
+        }
+        .remove-child {
+            background-color: #e74c3c;
+            padding: 2px 5px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .remove-child:hover {
+            background-color: #c0392b;
+        }
+        .duplicate-child {
+            background-color: #f39c12;
+            padding: 2px 5px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .duplicate-child:hover {
+            background-color: #e67e22;
+        }
+        .child-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 5px;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .action-buttons button {
+            margin: 0;
+            width: auto;
+            padding: 8px 12px;
+        }
+        .download-btn {
+            background-color: #27ae60;
+        }
+        .download-btn:hover {
+            background-color: #219653;
+        }
+        .copy-btn {
+            background-color: #9b59b6;
+        }
+        .copy-btn:hover {
+            background-color: #8e44ad;
+        }
+        .preview-btn {
+            background-color: #f39c12;
+        }
+        .preview-btn:hover {
+            background-color: #e67e22;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 700px;
+            border-radius: 5px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        .filename-input {
+            margin-top: 15px;
+        }
+        .filename-input label {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .filename-input input {
+            width: auto;
+            display: inline-block;
+        }
+        .search-container {
+            position: relative;
+            margin-bottom: 10px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 8px 30px 8px 10px;
+            border: none;
+            border-radius: 10px;
+            font-family: Poppins;
+        }
+        .search-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6d496a;
+        }
+        .item-select {
+            margin-top: 5px;
+        }
+
+    .properties-container {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 10px;
+    }
+    .toggle-properties {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 5px;
+        font-family: Poppins;
+    }
+    .toggle-properties:hover {
+        background-color: #2980b9;
+    }
+
+    </style>
+</head>
+<body>
+    <h1>ashley's simple json maker</h1>
+    <p>designed by thenamesashley</p>
+    <div class="container">
+<!-- Left Hand Slot -->
+<div class="slot" id="leftHandSlot">
+    <h3>left hand</h3>
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search items..." 
+               oninput="filterItems('leftHandItem', this.value, true)">
+        <span class="search-icon">🔍</span>
+    </div>
+    <label for="leftHandItem">item</label>
+    <select id="leftHandItem" class="item-select" onchange="checkForBackpack('leftHandSlot', this.value)">
+        <option value="">-- select item --</option>
+    </select>
+    <button class="toggle-properties" onclick="toggleProperties('leftHandProperties')">Properties ▼</button>
+    <div id="leftHandProperties" class="properties-container" style="display:none;">
+        <label for="leftHandHue">hue (0-240)</label>
+        <input type="number" id="leftHandHue" min="0" max="360" value="161">
+        <label for="leftHandSaturation">saturation (-124-124)</label>
+        <input type="number" id="leftHandSaturation" min="-124" max="124" value="116">
+        <label for="leftHandScaleModifier">scale modifier</label>
+        <input type="number" id="leftHandScaleModifier" value="0" step="0.1">
+    </div>
+    <div id="leftHandChildren" class="children-container" style="display: none;">
+        <h4>child items</h4>
+        <div class="child-item">
+            <button class="add-child" onclick="addChild('leftHandChildren')">add item</button>
+        </div>
+    </div>
+</div>
+
+<!-- Right Hand Slot -->
+<div class="slot" id="rightHandSlot">
+    <h3>right hand</h3>
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search items..." 
+               oninput="filterItems('rightHandItem', this.value, true)">
+        <span class="search-icon">🔍</span>
+    </div>
+    <label for="rightHandItem">item</label>
+    <select id="rightHandItem" class="item-select" onchange="checkForBackpack('rightHandSlot', this.value)">
+        <option value="">-- select item --</option>
+    </select>
+    <button class="toggle-properties" onclick="toggleProperties('rightHandProperties')">Properties ▼</button>
+    <div id="rightHandProperties" class="properties-container" style="display:none;">
+        <label for="rightHandHue">hue (0-240)</label>
+        <input type="number" id="rightHandHue" min="0" max="360" value="161">
+        <label for="rightHandSaturation">saturation (-124-124)</label>
+        <input type="number" id="rightHandSaturation" min="-124" max="124" value="116">
+        <label for="rightHandScaleModifier">scale modifier</label>
+        <input type="number" id="rightHandScaleModifier" value="0" step="0.1">
+    </div>
+    <div id="rightHandChildren" class="children-container" style="display: none;">
+        <h4>child items</h4>
+        <div class="child-item">
+            <button class="add-child" onclick="addChild('rightHandChildren')">add item</button>
+        </div>
+    </div>
+</div>
+
+<!-- Left Hip Slot -->
+<div class="slot" id="leftHipSlot">
+    <h3>left hip</h3>
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search items..." 
+               oninput="filterItems('leftHipItem', this.value, true)">
+        <span class="search-icon">🔍</span>
+    </div>
+    <label for="leftHipItem">item</label>
+    <select id="leftHipItem" class="item-select" onchange="checkForBackpack('leftHipSlot', this.value)">
+        <option value="">-- select item --</option>
+    </select>
+    <button class="toggle-properties" onclick="toggleProperties('leftHipProperties')">Properties ▼</button>
+    <div id="leftHipProperties" class="properties-container" style="display:none;">
+        <label for="leftHipHue">hue (0-240)</label>
+        <input type="number" id="leftHipHue" min="0" max="360" value="161">
+        <label for="leftHipSaturation">saturation (-124-124)</label>
+        <input type="number" id="leftHipSaturation" min="-124" max="124" value="116">
+        <label for="leftHipScaleModifier">scale modifier</label>
+        <input type="number" id="leftHipScaleModifier" value="0" step="0.1">
+    </div>
+    <div id="leftHipChildren" class="children-container" style="display: none;">
+        <h4>child items</h4>
+        <div class="child-item">
+            <button class="add-child" onclick="addChild('leftHipChildren')">add item</button>
+        </div>
+    </div>
+</div>
+
+<!-- Right Hip Slot -->
+<div class="slot" id="rightHipSlot">
+    <h3>right hip</h3>
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search items..." 
+               oninput="filterItems('rightHipItem', this.value, true)">
+        <span class="search-icon">🔍</span>
+    </div>
+    <label for="rightHipItem">item</label>
+    <select id="rightHipItem" class="item-select" onchange="checkForBackpack('rightHipSlot', this.value)">
+        <option value="">-- select item --</option>
+    </select>
+    <button class="toggle-properties" onclick="toggleProperties('rightHipProperties')">Properties ▼</button>
+    <div id="rightHipProperties" class="properties-container" style="display:none;">
+        <label for="rightHipHue">hue (0-240)</label>
+        <input type="number" id="rightHipHue" min="0" max="360" value="161">
+        <label for="rightHipSaturation">saturation (-124-124)</label>
+        <input type="number" id="rightHipSaturation" min="-124" max="124" value="116">
+        <label for="rightHipScaleModifier">scale modifier</label>
+        <input type="number" id="rightHipScaleModifier" value="0" step="0.1">
+    </div>
+    <div id="rightHipChildren" class="children-container" style="display: none;">
+        <h4>child items</h4>
+        <div class="child-item">
+            <button class="add-child" onclick="addChild('rightHipChildren')">add item</button>
+        </div>
+    </div>
+</div>
+
+<!-- Back Slot -->
+<div class="slot" id="backSlot">
+    <h3>back</h3>
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search items..." 
+               oninput="filterItems('backItem', this.value, true)">
+        <span class="search-icon">🔍</span>
+    </div>
+    <label for="backItem">item</label>
+    <select id="backItem" class="item-select" onchange="checkForBackpack('backSlot', this.value)">
+        <option value="">-- select item --</option>
+    </select>
+    <button class="toggle-properties" onclick="toggleProperties('backProperties')">Properties ▼</button>
+    <div id="backProperties" class="properties-container" style="display:none;">
+        <label for="backHue">hue (0-240)</label>
+        <input type="number" id="backHue" min="0" max="360" value="161">
+        <label for="backSaturation">saturation (-124-124)</label>
+        <input type="number" id="backSaturation" min="-124" max="124" value="116">
+        <label for="backScaleModifier">scale modifier</label>
+        <input type="number" id="backScaleModifier" value="0" step="0.1">
+    </div>
+    <div id="backChildren" class="children-container" style="display: none;">
+        <h4>child items</h4>
+        <div class="child-item">
+            <button class="add-child" onclick="addChild('backChildren')">add item</button>
+        </div>
+    </div>
+</div>
+
+        <button onclick="generateJSON()">generate JSON</button>
+        
+        <div id="output">your JSON will appear here...</div>
+        
+        <div class="filename-input">
+            <label for="jsonFilename">filename:</label>
+            <input type="text" id="jsonFilename" value="animal_company_loadout" placeholder="Enter filename">
+            <span>.json</span>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="download-btn" onclick="downloadJSON()" disabled id="downloadBtn">download JSON</button>
+            <button class="copy-btn" onclick="copyToClipboard()" disabled id="copyBtn">copy to clipboard</button>
+            <button class="preview-btn" onclick="openPreview()" disabled id="previewBtn">preview JSON</button>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePreview()">&times;</span>
+            <h2>JSON preview</h2>
+            <pre id="modalPreviewContent"></pre>
+        </div>
+    </div>
+    <p>please dm me on discord (@thenamesashley) for any issues or suggestions</p>
+
+    <script>
+        // List of backpack item IDs
+        // Add child item to a container
+        function addChild(containerId) {
+    const container = document.getElementById(containerId);
+    const childDiv = document.createElement('div');
+    childDiv.className = 'child-item';
+    childDiv.innerHTML = `
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search child items..." 
+                   oninput="filterChildItems(this.nextElementSibling, this.value, true)">
+            <span class="search-icon">🔍</span>
+        </div>
+        <select class="child-item-select">
+            <option value="">-- select item --</option>
+        </select>
+        <button class="toggle-properties" onclick="toggleProperties(this)">Properties ▼</button>
+        <div class="properties-container" style="display:none;">
+            <label>hue (0-240)</label>
+            <input type="number" class="child-hue" min="0" max="360" value="161">
+            <label>saturation (-124-124):</label>
+            <input type="number" class="child-saturation" min="-124" max="124" value="116">
+            <label>scale modifier</label>
+            <input type="number" class="child-scale-modifier" value="0" step="0.1">
+        </div>
+        <div class="child-buttons">
+            <button class="duplicate-child" onclick="duplicateChild(this.parentNode.parentNode, '${containerId}')">Duplicate</button>
+            <button class="remove-child" onclick="this.parentNode.parentNode.remove()">Remove</button>
+        </div>
+    `;
+        
+        container.insertBefore(childDiv, container.lastElementChild);
+        
+        // Populate the new select with items
+        const select = childDiv.querySelector('.child-item-select');
+        items.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.value;
+            option.textContent = item.text;
+            select.appendChild(option);
+        });
+        const searchInput = childDiv.querySelector('.search-input');
+    const childSelect = childDiv.querySelector('.child-item-select');
+    searchInput.oninput = function() {
+        filterChildItems(childSelect, this.value, true);
+    };
+    }
+
+    // Add filterChildItems function
+    function filterChildItems(selectElement, searchText, autoSelect = false) {
+        const currentValue = selectElement.value;
+        const searchLower = searchText.toLowerCase();
+        
+        // Clear all options except the first one
+        while (selectElement.options.length > 1) {
+            selectElement.remove(1);
+        }
+        
+        // Add matching items
+        const matchingItems = items.filter(item => item.text.toLowerCase().includes(searchLower));
+        matchingItems.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.value;
+            option.textContent = item.text;
+            selectElement.appendChild(option);
+        });
+        
+        // Auto-select first result if enabled and there are matches
+        if (autoSelect && matchingItems.length > 0 && !currentValue) {
+            selectElement.value = matchingItems[0].value;
+        }
+        
+        // Restore the selected value if it still exists
+        if (currentValue && Array.from(selectElement.options).some(opt => opt.value === currentValue)) {
+            selectElement.value = currentValue;
+        }
+    }
+
+        // Duplicate a child item
+        function duplicateChild(childElement, containerId) {
+    const container = document.getElementById(containerId);
+    const clone = childElement.cloneNode(true);
+    
+    // Copy all values from the original to the clone
+    const originalSelectElement = childElement.querySelector('.child-item-select');
+    const cloneSelectElement = clone.querySelector('.child-item-select');
+    cloneSelectElement.value = originalSelectElement.value;
+    
+    const originalHueElement = childElement.querySelector('.child-hue');
+    const cloneHueElement = clone.querySelector('.child-hue');
+    cloneHueElement.value = originalHueElement.value;
+    
+    const originalSaturationElement = childElement.querySelector('.child-saturation');
+    const cloneSaturationElement = clone.querySelector('.child-saturation');
+    cloneSaturationElement.value = originalSaturationElement.value;
+    
+    const originalScaleElement = childElement.querySelector('.child-scale-modifier');
+    const cloneScaleElement = clone.querySelector('.child-scale-modifier');
+    cloneScaleElement.value = originalScaleElement.value;
+    
+    // Reattach the search input handler
+    const searchInput = clone.querySelector('.search-input');
+    const selectElement = clone.querySelector('.child-item-select');
+    searchInput.oninput = function() {
+        filterChildItems(selectElement, this.value, true);
+    };
+    
+    const propertiesButton = clone.querySelector('.toggle-properties');
+    propertiesButton.onclick = function() {
+        toggleProperties(this);
+    };
+    // Update the duplicate's buttons
+    const buttonsDiv = clone.querySelector('.child-buttons');
+    buttonsDiv.innerHTML = `
+        <button class="duplicate-child" onclick="duplicateChild(this.parentNode.parentNode, '${containerId}')">Duplicate</button>
+        <button class="remove-child" onclick="this.parentNode.parentNode.remove()">Remove</button>
+    `;
+    
+    // Insert the clone right after the original
+    container.insertBefore(clone, childElement.nextSibling);
+}
+
+        // Generate JSON output
+        function generateJSON() {
+            const output = {
+                version: 1,
+                "made with ashley's simple json editor": "",
+                leftHand: getSlotData('leftHand'),
+                rightHand: getSlotData('rightHand'),
+                leftHip: getSlotData('leftHip'),
+                rightHip: getSlotData('rightHip'),
+                back: getSlotData('back')
+            };
+
+            // Display formatted JSON
+            const jsonString = JSON.stringify(output, null, 4);
+            document.getElementById('output').textContent = jsonString;
+            
+            // Enable action buttons
+            document.getElementById('downloadBtn').disabled = false;
+            document.getElementById('copyBtn').disabled = false;
+            document.getElementById('previewBtn').disabled = false;
+            
+            return output;
+        }
+
+        // Get data for a specific slot
+        function getSlotData(slotName) {
+            const itemID = document.getElementById(`${slotName}Item`).value;
+            if (!itemID) return {};
+            
+            const slotData = {
+                itemID: itemID,
+                colorHue: parseInt(document.getElementById(`${slotName}Hue`).value),
+                colorSaturation: parseInt(document.getElementById(`${slotName}Saturation`).value),
+                scaleModifier: parseFloat(document.getElementById(`${slotName}ScaleModifier`).value)
+            };
+
+            // Add children if this is a backpack and has children
+            const childrenContainer = document.getElementById(`${slotName}Children`);
+            if (childrenContainer && childrenContainer.style.display !== 'none') {
+                slotData.children = [];
+                
+                const childItems = childrenContainer.querySelectorAll('.child-item:not(:last-child)');
+                childItems.forEach(child => {
+                    const childItemID = child.querySelector('.child-item-select').value;
+                    if (childItemID) {
+                        slotData.children.push({
+                            itemID: childItemID,
+                            colorHue: parseInt(child.querySelector('.child-hue').value),
+                            colorSaturation: parseInt(child.querySelector('.child-saturation').value),
+                            scaleModifier: parseFloat(child.querySelector('.child-scale-modifier').value)
+                        });
+                    }
+                });
+                
+                // Remove children array if empty
+                if (slotData.children.length === 0) {
+                    delete slotData.children;
+                }
+            }
+
+            return slotData;
+        }
+
+        // Download JSON file with custom filename
+        function downloadJSON() {
+            const output = generateJSON();
+            const jsonString = JSON.stringify(output, null, 4);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const filename = document.getElementById('jsonFilename').value.trim() || 'animal_company_loadout';
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${filename}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Copy JSON to clipboard
+        function copyToClipboard() {
+            const outputText = document.getElementById('output').textContent;
+            navigator.clipboard.writeText(outputText).then(() => {
+                alert('JSON copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        // Open preview modal
+        function openPreview() {
+            const modal = document.getElementById('previewModal');
+            const outputText = document.getElementById('output').textContent;
+            document.getElementById('modalPreviewContent').textContent = outputText;
+            modal.style.display = 'block';
+        }
+
+        // Close preview modal
+        function closePreview() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('previewModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function filterItems(selectId, searchText, autoSelect = false) {
+        const select = document.getElementById(selectId);
+        const currentValue = select.value;
+        const searchLower = searchText.toLowerCase();
+        
+        // Clear all options except the first one
+        while (select.options.length > 1) {
+            select.remove(1);
+        }
+        
+        // Add matching items
+        const matchingItems = items.filter(item => item.text.toLowerCase().includes(searchLower));
+        matchingItems.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.value;
+            option.textContent = item.text;
+            select.appendChild(option);
+        });
+        
+        // Auto-select first result if enabled and there are matches
+        if (autoSelect && matchingItems.length > 0 && !currentValue) {
+            select.value = matchingItems[0].value;
+            // Trigger change event if this is a main slot
+            if (selectId.includes('Item') && !selectId.includes('child')) {
+                const slotId = selectId.replace('Item', 'Slot');
+                checkForBackpack(slotId, matchingItems[0].value);
+            }
+        }
+        
+        // Restore the selected value if it still exists
+        if (currentValue && Array.from(select.options).some(opt => opt.value === currentValue)) {
+            select.value = currentValue;
+        }
+    }
+    function toggleProperties(element) {
+    // Handle both cases:
+    // - When called from parent items (element is the properties container ID)
+    // - When called from child items (element is the button element)
+    
+    let propertiesContainer;
+    let buttonElement;
+    
+    if (typeof element === 'string') {
+        // Parent item case (called with container ID)
+        propertiesContainer = document.getElementById(element);
+        buttonElement = propertiesContainer.previousElementSibling;
+    } else {
+        // Child item case (called with button element)
+        buttonElement = element;
+        propertiesContainer = buttonElement.nextElementSibling;
+    }
+    
+    // Toggle the display
+    if (propertiesContainer.style.display === 'none') {
+        propertiesContainer.style.display = 'block';
+        buttonElement.textContent = 'Properties ▲';
+    } else {
+        propertiesContainer.style.display = 'none';
+        buttonElement.textContent = 'Properties ▼';
+    }
+}
+function replaceSelectsWithCustomDropdowns() {
+    if (!('ontouchstart' in window)) return;
+    
+    document.querySelectorAll('select').forEach(select => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'custom-select-wrapper';
+        wrapper.style.position = 'relative';
+        
+        const display = document.createElement('div');
+        display.className = 'custom-select-display';
+        display.textContent = select.options[select.selectedIndex]?.text || '-- select item --';
+        display.style.padding = '12px';
+        display.style.borderRadius = '10px';
+        display.style.backgroundColor = '#fff2fc';
+        display.style.marginBottom = '10px';
+        display.style.cursor = 'pointer';
+        
+        const dropdown = document.createElement('div');
+        dropdown.className = 'custom-select-dropdown';
+        dropdown.style.display = 'none';
+        dropdown.style.position = 'absolute';
+        dropdown.style.width = '100%';
+        dropdown.style.backgroundColor = '#fff2fc';
+        dropdown.style.borderRadius = '10px';
+        dropdown.style.zIndex = '1000';
+        dropdown.style.maxHeight = '200px';
+        dropdown.style.overflowY = 'auto';
+        
+        select.options.forEach(option => {
+            const item = document.createElement('div');
+            item.textContent = option.text;
+            item.style.padding = '12px';
+            item.style.cursor = 'pointer';
+            item.addEventListener('click', () => {
+                select.value = option.value;
+                display.textContent = option.text;
+                dropdown.style.display = 'none';
+                if (select.id.includes('Item') && !select.id.includes('child')) {
+                    const slotId = select.id.replace('Item', 'Slot');
+                    checkForBackpack(slotId, option.value);
+                }
+            });
+            dropdown.appendChild(item);
+        });
+        
+        display.addEventListener('click', () => {
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        });
+        
+        wrapper.appendChild(display);
+        wrapper.appendChild(dropdown);
+        select.parentNode.insertBefore(wrapper, select);
+        select.style.display = 'none';
+    });
+}
+        const backpackItems = [
+            "item_backpack",
+            "item_backpack_black",
+            "item_backpack_green",
+            "item_backpack_large_base",
+            "item_backpack_large_clover",
+            "item_backpack_large_basketball",
+            "item_backpack_pink",
+            "item_backpack_small_base",
+            "item_backpack_white",
+            "item_backpack_with_flashlight",
+            "item_heart_gun"
+        ];
+
+        // Global items array with all options embedded
+        const items = [
+    {value: "item_apple", text: "apple"},
+    {value: "item_anti_gravity_grenade", text: "anti-gravity grenade"},
+    {value: "item_arrow", text: "arrow"},
+    {value: "item_arrow_heart", text: "arrow heart"},
+    {value: "item_arrow_lightbulb", text: "arrow lightbulb"},
+    {value: "item_arrow_bomb", text: "arrow bomb UNRELEASED"},
+    {value: "item_arrow_teleport", text: "arrow teleport UNRELEASED"},
+    {value: "item_arena_pistol", text: "arena pistol"},
+    {value: "item_arena_shotgun", text: "arena shotgun"},
+    {value: "item_backpack", text: "backpack"},
+    {value: "item_backpack_black", text: "black backpack"},
+    {value: "item_backpack_green", text: "green backpack"},
+    {value: "item_backpack_large_base", text: "large base backpack"},
+    {value: "item_backpack_large_clover", text: "large clover backpack"},
+    {value: "item_backpack_large_basketball", text: "large basketball backpack"},
+    {value: "item_backpack_pink", text: "pink backpack"},
+    {value: "item_backpack_small_base", text: "small base backpack"},
+    {value: "item_backpack_white", text: "white backpack"},
+    {value: "item_backpack_with_flashlight", text: "backpack with flashlight"},
+    {value: "item_balloon", text: "balloon"},
+    {value: "item_balloon_heart", text: "heart balloon"},
+    {value: "item_banana", text: "banana"},
+    {value: "item_baseball_bat", text: "baseball bat"},
+    {value: "item_big_cup", text: "big cup"},
+    {value: "item_boombox", text: "boombox"},
+    {value: "item_box_fan", text: "box fan"},
+    {value: "item_boombox_neon", text: "neon boombox"},
+    {value: "item_calculator", text: "calculator"},
+    {value: "item_cardboard_box", text: "cardboard box"},
+    {value: "item_cash", text: "cash"},
+    {value: "item_cash_pile", text: "cash pile"},
+    {value: "item_cash_mega_pile", text: "mega cash pile"},
+    {value: "item_clapper", text: "clapper"},
+    {value: "item_cluster_grenade", text: "cluster grenade"},
+    {value: "item_cola", text: "cola"},
+    {value: "item_cola_large", text: "large cola"},
+    {value: "item_company_ration", text: "company ration"},
+    {value: "item_company_ration_heal", text: "company ration (heal)"},
+    {value: "item_cracker", text: "cracker"},
+    {value: "item_crate", text: "crate"},
+    {value: "item_crossbow", text: "crossbow"},
+    {value: "item_crossbow_heart", text: "heart crossbow"},
+    {value: "item_crowbar", text: "crowbar"},
+    {value: "item_disc", text: "disc"},
+    {value: "item_disposable_camera", text: "disposable camera"},
+    {value: "item_dynamite", text: "dynamite"},
+    {value: "item_dynamite_cube", text: "cube dynamite"},
+    {value: "item_hawaiian_drum", text: "drums"},
+    {value: "item_egg", text: "egg"},
+    {value: "item_flaregun", text: "flare gun"},
+    {value: "item_flashbang", text: "flashbang"},
+    {value: "item_flashlight", text: "flashlight"},
+    {value: "item_flashlight_mega", text: "mega flashlight"},
+    {value: "item_flashlight_red", text: "red flashlight"},
+    {value: "item_floppy3", text: "floppy 3"},
+    {value: "item_floppy5", text: "floppy 5"},
+    {value: "item_football", text: "football"},
+    {value: "item_frying_pan", text: "frying pan"},
+    {value: "item_glowstick", text: "glowstick"},
+    {value: "item_goldbar", text: "gold bar"},
+    {value: "item_grenade", text: "grenade"},
+    {value: "item_heart_chunk", text: "heart chunk"},
+    {value: "item_heart_gun", text: "heart gun"},
+    {value: "item_heartchocolatebox", text: "heart chocolate box"},
+    {value: "item_hh_key", text: "hh key"},
+    {value: "item_hookshot", text: "hookshot"},
+    {value: "item_hookshot_sword", text: "yeetblade"},
+    {value: "item_hoverpad", text: "hoverpad"},
+    {value: "item_impulse_grenade", text: "impulse grenade"},
+    {value: "item_jetpack", text: "jetpack"},
+    {value: "item_keycard", text: "keycard"},
+    {value: "item_lance", text: "lance"},
+    {value: "item_large_banana", text: "large banana"},
+    {value: "item_mug", text: "mug"},
+    {value: "item_landmine", text: "landmine"},
+    {value: "item_nut", text: "nut"},
+    {value: "item_ogre_hands", text: "ogre hands"},
+    {value: "item_ore_copper_l", text: "large copper ore"},
+    {value: "item_ore_copper_m", text: "medium copper ore"},
+    {value: "item_ore_copper_s", text: "small copper ore"},
+    {value: "item_ore_gold_l", text: "large gold ore"},
+    {value: "item_ore_gold_m", text: "medium gold ore"},
+    {value: "item_ore_gold_s", text: "small gold ore"},
+    {value: "item_ore_hell", text: "hell ore"},
+    {value: "item_ore_silver_l", text: "large silver ore"},
+    {value: "item_ore_silver_m", text: "medium silver ore"},
+    {value: "item_ore_silver_s", text: "small silver ore"},
+    {value: "item_painting_canvas", text: "painting canvas"},
+    {value: "item_paperpack", text: "paper pack"},
+    {value: "item_pelican_case", text: "suitcase"},
+    {value: "item_pickaxe", text: "pickaxe"},
+    {value: "item_pickaxe_cny", text: "gilded pickaxe"},
+    {value: "item_pickaxe_cube", text: "cube pickaxe"},
+    {value: "item_pipe", text: "pipe"},
+    {value: "item_pinata_bat", text: "pinata bat"},
+    {value: "item_plunger", text: "plunger"},
+    {value: "item_pogostick", text: "pogostick"},
+    {value: "item_police_baton", text: "police baton"},
+    {value: "item_pumpkin_pie", text: "pumpkin pie"},
+    {value: "item_pumpkinjack", text: "pumpkin jack"},
+    {value: "item_pumpkinjack_small", text: "small pumpkin jack"},
+    {value: "item_quiver", text: "quiver"},
+    {value: "item_quiver_heart", text: "heart quiver"},
+    {value: "item_radioactive_broccoli", text: "radioactive broccoli"},
+    {value: "item_broccoli_grenade", text: "big broccoli bomb"},
+    {value: "item_broccoli_shrink_grenade", text: "small broccoli bomb"},
+    {value: "item_randombox_mobloot_big", text: "random box mob loot (big)"},
+    {value: "item_randombox_mobloot_medium", text: "random box mob loot (medium)"},
+    {value: "item_randombox_mobloot_small", text: "random box mob loot (small)"},
+    {value: "item_randombox_mobloot_weapons", text: "random box mob loot (weapons)"},
+    {value: "item_revolver", text: "revolver"},
+    {value: "item_revolver_ammo", text: "revolver ammo"},
+    {value: "item_rope", text: "rope"},
+    {value: "item_rpg", text: "rpg"},
+    {value: "item_rpg_spear", text: "boomspear"},
+    {value: "item_rpg_ammo", text: "rpg ammo"},
+    {value: "item_rpg_ammo_spear", text: "boomspear ammo"},
+    {value: "item_rpg_cny", text: "dragon rpg"},
+    {value: "item_rubberducky", text: "rubber ducky"},
+    {value: "item_ruby", text: "ruby"},
+    {value: "item_saddle", text: "saddle"},
+    {value: "item_scanner", text: "scanner"},
+    {value: "item_scissors", text: "scissors"},
+    {value: "item_shield", text: "shield"},
+    {value: "item_shield_bones", text: "bone shield"},
+    {value: "item_shield_police", text: "police shield"},
+    {value: "item_shotgun", text: "shotgun"},
+    {value: "item_shotgun_ammo", text: "shotgun ammo"},
+    {value: "item_shredder", text: "shredder"},
+    {value: "item_shrinking_broccoli", text: "shrinking broccoli"},
+    {value: "item_snowball", text: "snowball"},
+    {value: "item_stapler", text: "stapler"},
+    {value: "item_stick_armbones", text: "stick arm bones"},
+    {value: "item_stick_bone", text: "stick bone"},
+    {value: "item_sticker_dispenser", text: "sticker dispenser"},
+    {value: "item_sticky_dynamite", text: "sticky dynamite"},
+    {value: "item_stinky_cheese", text: "stinky cheese"},
+    {value: "item_tablet", text: "map tablet"},
+    {value: "item_tapedispenser", text: "tape dispenser"},
+    {value: "item_tele_grenade", text: "teleport grenade"},
+    {value: "item_theremin", text: "theremin"},
+    {value: "item_timebomb", text: "time bomb"},
+    {value: "item_toilet_paper", text: "toilet paper"},
+    {value: "item_toilet_paper_mega", text: "mega toilet paper"},
+    {value: "item_toilet_paper_roll_empty", text: "empty toilet paper roll"},
+    {value: "item_treestick", text: "tree stick"},
+    {value: "item_tripwire_explosive", text: "tripwire explosive"},
+    {value: "item_trophy", text: "trophy"},
+    {value: "item_turkey_leg", text: "turkey leg"},
+    {value: "item_turkey_whole", text: "whole turkey"},
+    {value: "item_umbrella", text: "umbrella"},
+    {value: "item_umbrella_clover", text: "clover umbrella"},
+    {value: "item_unidentified", text: "unidentified"},
+    {value: "item_ukulele", text: "ukulele"},
+    {value: "item_ukulele_gold", text: "gold ukulele"},
+    {value: "item_upsidedown_loot", text: "upside down loot"},
+    {value: "item_uranium_chunk_l", text: "large uranium chunk"},
+    {value: "item_uranium_chunk_m", text: "medium uranium chunk"},
+    {value: "item_uranium_chunk_s", text: "small uranium chunk"},
+    {value: "item_whoopie", text: "whoopie cushion"},
+    {value: "item_zipline_gun", text: "zipline gun"},
+    {value: "item_rpg_easter", text: "easter rpg"},
+    {value: "item_rpg_ammo_egg", text: "rpg ammo egg"},
+    {value: "item_revolver_gold", text: "gold revolver"},
+    {value: "item_viking_hammer", text: "hammer yellow"},
+    {value: "item_viking_hammer_twilight", text: "hammer twilight"},
+    {value: "item_zombie_meat", text: "zombie meat"},
+    {value: "item_randombox_mobloot_zombie", text: "zombie loot box"}
+];
+
+        // Initialize all item selectors
+        function initializeSelectors() {
+    const itemSelectors = document.querySelectorAll('.item-select');
+    itemSelectors.forEach(select => {
+        // Clear existing options except the first one
+        while (select.options.length > 1) {
+            select.remove(1);
+        }
+        
+        // Add all items
+        items.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.value;
+            option.textContent = item.text;
+            select.appendChild(option);
+        });
+    });
+    window.addEventListener('load', () => {
+    initializeSelectors();
+    replaceSelectsWithCustomDropdowns();
+});
+    // Set all default values to empty (showing "-- select item --")
+    document.getElementById('leftHandItem').value = '';
+    document.getElementById('rightHandItem').value = '';
+    document.getElementById('leftHipItem').value = '';
+    document.getElementById('rightHipItem').value = '';
+    document.getElementById('backItem').value = '';
+    
+    // Keep the backpack children container hidden by default
+    document.getElementById('rightHandChildren').style.display = 'none';
+}
+
+        // Initialize when DOM is loaded
+        window.addEventListener('load', initializeSelectors);
+
+        // Check if selected item is a backpack and show/hide children container
+        function checkForBackpack(slotId, itemValue) {
+            const childrenContainer = document.getElementById(slotId.replace('Slot', 'Children'));
+            if (backpackItems.includes(itemValue)) {
+                childrenContainer.style.display = 'block';
+            } else {
+                childrenContainer.style.display = 'none';
+            }
+        }
+        
+
+    </script>
+</body>
+</html>
